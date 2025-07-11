@@ -112,7 +112,14 @@ Next.js 内置了多种优化技术：
   },
 };
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default function ArticlePage({ params, searchParams }: PageProps) {
   const article = articles[params.slug];
 
   if (!article) {
