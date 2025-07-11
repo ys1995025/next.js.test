@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
 
 interface Article {
   id: number;
@@ -113,43 +112,8 @@ Next.js 内置了多种优化技术：
   },
 };
 
-// 生成静态路径参数
-export async function generateStaticParams() {
-  return Object.keys(articles).map((slug) => ({
-    slug,
-  }));
-}
-
-// 生成元数据
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export default function ArticlePage({ params }: { params: { slug: string } }) {
   const article = articles[params.slug];
-
-  if (!article) {
-    return {
-      title: 'Article Not Found',
-    };
-  }
-
-  return {
-    title: article.title,
-    description: article.description,
-  };
-}
-
-// 模拟异步获取文章数据
-async function getArticle(slug: string): Promise<Article | null> {
-  // 在实际应用中，这里会是一个数据库查询
-  return articles[slug] || null;
-}
-
-export default async function ArticlePage({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const article = await getArticle(params.slug);
 
   if (!article) {
     notFound();
