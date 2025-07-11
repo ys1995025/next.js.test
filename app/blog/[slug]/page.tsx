@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
 
 interface Article {
   id: number;
@@ -119,19 +120,35 @@ export async function generateStaticParams() {
   }));
 }
 
+// 生成元数据
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const article = articles[params.slug];
+
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    };
+  }
+
+  return {
+    title: article.title,
+    description: article.description,
+  };
+}
+
 // 模拟异步获取文章数据
 async function getArticle(slug: string): Promise<Article | null> {
   // 在实际应用中，这里会是一个数据库查询
   return articles[slug] || null;
 }
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
-
-export default async function ArticlePage({ params }: Props) {
+export default async function ArticlePage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const article = await getArticle(params.slug);
 
   if (!article) {
