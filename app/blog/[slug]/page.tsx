@@ -112,15 +112,18 @@ Next.js 内置了多种优化技术：
   },
 };
 
-interface PageProps {
-  params: {
-    slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+// 模拟异步获取文章数据
+async function getArticle(slug: string): Promise<Article | null> {
+  // 在实际应用中，这里会是一个数据库查询
+  return articles[slug] || null;
 }
 
-export default function ArticlePage({ params, searchParams }: PageProps) {
-  const article = articles[params.slug];
+export default async function ArticlePage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const article = await getArticle(params.slug);
 
   if (!article) {
     notFound();
