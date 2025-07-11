@@ -112,17 +112,26 @@ Next.js 内置了多种优化技术：
   },
 };
 
+// 生成静态路径参数
+export async function generateStaticParams() {
+  return Object.keys(articles).map((slug) => ({
+    slug,
+  }));
+}
+
 // 模拟异步获取文章数据
 async function getArticle(slug: string): Promise<Article | null> {
   // 在实际应用中，这里会是一个数据库查询
   return articles[slug] || null;
 }
 
-export default async function ArticlePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function ArticlePage({ params }: Props) {
   const article = await getArticle(params.slug);
 
   if (!article) {
